@@ -14,6 +14,12 @@ def main():
 
         path = data[0].split(" ")[1]
         
+        useragent = " "
+        for line in data[1:]:
+            if line.startswith("User-Agent:"):
+                user_agent = line.split("User-Agent:")[1].strip()
+                break
+
         if path == "/":
             response = "HTTP/1.1 200 OK\r\n\r\n"
         elif path.startswith("/echo/"):
@@ -22,6 +28,11 @@ def main():
             response += f"Content-Type: text/plain\r\n"
             response += f"Content-Length: {len(content)}\r\n"
             response += f"\r\n{content}"
+        elif path == "/user-agent":
+            response = f"HTTP/1.1 200 OK\r\n"
+            response += f"Content-Type: text/plain\r\n"
+            response += f"Content-Length: {len(user_agent)}\r\n"
+            response += f"\r\n{user_agent}"
         else:
             response = "HTTP/1.1 404 Not Found\r\n\r\n"
         
