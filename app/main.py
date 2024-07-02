@@ -1,4 +1,5 @@
 import socket
+import os # for file reading
 
 def main():
     server_socket = socket.create_server(("localhost", 4221), reuse_port=True)
@@ -33,6 +34,19 @@ def main():
             response += f"Content-Type: text/plain\r\n"
             response += f"Content-Length: {len(user_agent)}\r\n"
             response += f"\r\n{user_agent}"
+        elif path.startswith("/files/"): # for any url that starts with "/files/":
+            _,filename = path.split("/files/", 1) # get the filename from the path
+
+            if os.path.exists(filename):
+                with open(filename, "rb") as f:
+                    content = f.read()
+                    response = f"HTTP/1.1 200 OK\r\n"
+                    response += f"Content-Type: text/plain\r\n"
+                    response += f"Content-Length: {len(content)}\r\n"
+                    response += f"\r\n{content}"
+            else:
+                response = "HTTP/1.1 404 Not Found\r\n\r\n"
+
         else:
             response = "HTTP/1.1 404 Not Found\r\n\r\n"
         
