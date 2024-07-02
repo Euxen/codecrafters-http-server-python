@@ -23,7 +23,7 @@ def main():
 
         if path == "/":
             response = "HTTP/1.1 200 OK\r\n\r\n"
-            
+
         elif path.startswith("/echo/"):
             content = path[6:]
             response = f"HTTP/1.1 200 OK\r\n"
@@ -39,15 +39,14 @@ def main():
 
         elif path.startswith("/files/"):
             _, filename = path.split("/files/", 1)
-            file_path = os.path.join("files", filename)  # Assuming files are in a 'files' directory
+            file_path = os.path.join("/tmp", filename)  # Assuming files are in a 'files' directory
             if os.path.exists(file_path):
-                with open(file_path, "rb") as f:
+                with open(file_path, "r") as f:
                     content = f.read()
                 response = f"HTTP/1.1 200 OK\r\n"
                 response += f"Content-Type: application/octet-stream\r\n"
                 response += f"Content-Length: {len(content)}\r\n"
-                response += f"\r\n"
-                response = response.encode("utf-8") + content
+                response += f"\r\n{content}"
             else:
                 response = "HTTP/1.1 404 Not Found\r\n\r\nFile not found"
 
