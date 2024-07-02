@@ -1,5 +1,5 @@
 import socket
-import os # for file reading
+import sys
 
 def main():
     server_socket = socket.create_server(("localhost", 4221), reuse_port=True)
@@ -39,16 +39,21 @@ def main():
 
         elif path.startswith("/files/"):
             _, filename = path.split("/files/", 1)
-            file_path = os.path.join("/tmp", filename)  # Assuming files are in a 'files' directory
-            if os.path.exists(file_path):
-                with open(file_path, "r") as f:
-                    content = f.read()
-                response = f"HTTP/1.1 200 OK\r\n"
-                response += f"Content-Type: application/octet-stream\r\n"
-                response += f"Content-Length: {len(content)}\r\n"
-                response += f"\r\n{content}"
-            else:
-                response = "HTTP/1.1 404 Not Found\r\n\r\nFile not found"
+            directory = sys.argv[2]
+            print (directory, filename)
+
+            with open(f"{directory}/{filename}", "rb") as f:
+                content = f.read()
+
+            response = f"HTTP/1.1 200 OK\r\n"
+            response += f"Content-Type: application/octet-stream\r\n"
+            response += f"Content-Length: {len(content)}\r\n"
+            response += f"\r\n{content}"
+
+            # Assuming files are in a 'files' directory
+            
+        else:
+            response = "HTTP/1.1 404 Not Found\r\n\r\n"
 
         else:
             response = "HTTP/1.1 404 Not Found\r\n\r\n"
