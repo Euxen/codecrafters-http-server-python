@@ -50,11 +50,6 @@ def main():
             response += f"Content-Length: {len(content)}\r\n"
             response += f"\r\n{content}"
 
-            # Assuming files are in a 'files' directory
-            
-        else:
-            response = "HTTP/1.1 404 Not Found\r\n\r\n"
-
         else:
             response = "HTTP/1.1 404 Not Found\r\n\r\n"
         
