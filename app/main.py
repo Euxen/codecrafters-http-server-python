@@ -41,14 +41,17 @@ def main():
             _, filename = path.split("/files/", 1)
             directory = sys.argv[2]
             print(directory, filename)
+            try:
+                with open(f"{directory}/{filename}", "rb") as f:
+                    content = f.read()
         
-            with open(f"{directory}/{filename}", "rb") as f:
-                content = f.read()
-        
-            response = f"HTTP/1.1 200 OK\r\n"
-            response += f"Content-Type: application/octet-stream\r\n"
-            response += f"Content-Length: {len(content)}\r\n"
-            response += f"\r\n{content.decode('utf-8')}"
+                response = f"HTTP/1.1 200 OK\r\n"
+                response += f"Content-Type: application/octet-stream\r\n"
+                response += f"Content-Length: {len(content)}\r\n"
+                response += f"\r\n{content.decode('utf-8')}"
+            except Exception as e:
+                print(e)
+                response = "HTTP/1.1 404 Not Found\r\n\r\n"
 
         else:
             response = "HTTP/1.1 404 Not Found\r\n\r\n"
