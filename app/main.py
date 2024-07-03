@@ -72,7 +72,7 @@ def main():
             response += f"Content-Type: text/plain\r\n"
             
             if supports_gzip and content:
-                content = compress_data(content)
+                content = compress_data(content.encode("utf-8"))
             
                 response += f"Content-Encoding: gzip\r\n"
                 response += f"Content-Length: {len(content).to_bytes(2, 'big')}\r\n".encode("utf-8")
