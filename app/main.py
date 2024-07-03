@@ -42,8 +42,8 @@ def main():
             directory = sys.argv[2]
             print (directory, filename)
 
-            with open(f"{directory}/{filename}", "rb") as f:
-                content = f.read()
+            with open(f"{directory}/{filename}", "r") as f:
+                content = f.read(4096)
 
             response = f"HTTP/1.1 200 OK\r\n"
             response += f"Content-Type: application/octet-stream\r\n"
