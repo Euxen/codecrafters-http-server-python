@@ -42,7 +42,7 @@ def main():
             directory = sys.argv[2]
             print (directory, filename)
 
-            with open(f"{directory}/{filename}", "rb") as f:
+            with open(f"{directory}/{filename}", "r") as f:
                 body = f.read()
 
             response = f"HTTP/1.1 200 OK\r\nContent-Type: application/octet-stream\r\nContent-Length: {len(body)}\r\n\r\n{body}".encode()
