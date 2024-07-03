@@ -46,7 +46,8 @@ def main():
 
             response = f"HTTP/1.1 200 OK\r\n"
             response += f"Content-Type: application/octet-stream\r\n"
-            response += f"Content-Length: {len(content)}\r\n {content}"
+            response += f"Content-Length: {len(content)}\r\n"
+            response =+ f"{content}\r\n"
             
 
         else:
