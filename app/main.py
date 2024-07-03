@@ -43,12 +43,9 @@ def main():
             print (directory, filename)
 
             with open(f"{directory}/{filename}", "rb") as f:
-                content = f.read(4096)
+                body = f.read()
 
-            response = f"HTTP/1.1 200 OK\r\n"
-            response += f"Content-Type: application/octet-stream\r\n"
-            response += f"Content-Length: {len(content)}\r\n"
-            response += f"\r\n{content}"
+            response = f"HTTP/1.1 200 OK\r\nContent-Type: application/octet-stream\r\nContent-Length: {len(body)}\r\n\r\n{body}".encode()
 
         else:
             response = "HTTP/1.1 404 Not Found\r\n\r\n"
