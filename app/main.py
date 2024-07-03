@@ -75,8 +75,8 @@ def main():
                 content = compress_data(content.encode("utf-8"))
             
                 response += f"Content-Encoding: gzip\r\n"
-                response += f"Content-Length: {len(content).to_bytes(2, 'big')}\r\n".encode("utf-8")
-                response += f"\r\n{gzip.compress(content)}"
+                response += f"Content-Length: {len(content)}\r\n"
+                response += f"\r\n{content}"
             else:
                 response += f"Content-Length: {len(content)}\r\n"
                 response += f"\r\n{content}"
