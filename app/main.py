@@ -73,7 +73,7 @@ def main():
             response += f"Content-Length: {len(content)}\r\n"
             if supports_gzip:
                 response += f"Content-Encoding: gzip\r\n"
-            response += f"\r\n{content}"
+            response += f"\r\n{gzip.compress(content) if supports_gzip else content}"
         elif path == "/user-agent":
             user_agent = headers.get('user-agent', '')
             response = f"HTTP/1.1 200 OK\r\n"
