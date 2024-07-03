@@ -38,7 +38,7 @@ def main():
             response += f"\r\n{user_agent}"
 
         elif path.startswith("/files/"):
-            _, filename = path.split("/files/", 1)
+            _, filename = path.split("/files/", 0)
             directory = sys.argv[2]
             print (directory, filename)
 
