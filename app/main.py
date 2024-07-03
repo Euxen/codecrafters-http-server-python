@@ -39,9 +39,6 @@ def main():
             if method == "POST":
                 content_length = int(headers.get('content-length', 0))
                 body = request.split("\r\n\r\n", 1)[1][:content_length]
-                
-
-
                 with open(file_path, "w") as f:
                     f.write(body)
                 
@@ -74,6 +71,11 @@ def main():
             response = f"HTTP/1.1 200 OK\r\n"
             response += f"Content-Type: text/plain\r\n"
             response += f"Content-Length: {len(content)}\r\n"
+
+            if supports_gzip and len(content) > 1000:
+                content = compress_data(content)
+                response += f"Content-Encoding: gzip\r\n"
+
             response += f"\r\n{content}"
         elif path == "/user-agent":
             user_agent = headers.get('user-agent', '')
