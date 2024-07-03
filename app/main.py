@@ -38,14 +38,17 @@ def main():
             response += f"\r\n{user_agent}"
 
         elif path.startswith("/files/"):
-            filename = path[7:]
+            _, filename = path.split("/files/", 1)
             directory = sys.argv[2]
-            print (directory, filename)
-
-            with open(f"{directory}/{filename}", "r") as f:
-                body = f.read()
-
-            response = f"HTTP/1.1 200 OK\r\nContent-Type: application/octet-stream\r\nContent-Length: {len(body)}\r\n\r\n{body}".encode()
+            print(directory, filename)
+        
+            with open(f"{directory}/{filename}", "rb") as f:
+                content = f.read()
+        
+            response = f"HTTP/1.1 200 OK\r\n"
+            response += f"Content-Type: application/octet-stream\r\n"
+            response += f"Content-Length: {len(content)}\r\n"
+            response += f"\r\n{content.decode('utf-8')}"
 
         else:
             response = "HTTP/1.1 404 Not Found\r\n\r\n"
