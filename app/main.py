@@ -67,18 +67,20 @@ def main():
         elif path == "/":
             response = "HTTP/1.1 200 OK\r\n\r\n"
         elif path.startswith("/echo/"):
-            content = path[6:]
+            content = path[6:] if path[6:] is not None else ""
             response = f"HTTP/1.1 200 OK\r\n"
             response += f"Content-Type: text/plain\r\n"
             
-            if supports_gzip:
-                com_content = compress_data(content)
-                response += f"Content-Length: {len(com_content)}\r\n"
+            if supports_gzip and content:
+                content = compress_data(content)
+            
                 response += f"Content-Encoding: gzip\r\n"
-                response += f"\r\n{gzip.compress(com_content)}"
+                response += f"Content-Length: {len(content).to_bytes(2, 'big')}\r\n".encode("utf-8")
+                response += f"\r\n{gzip.compress(content)}"
             else:
                 response += f"Content-Length: {len(content)}\r\n"
                 response += f"\r\n{content}"
+                
         elif path == "/user-agent":
             user_agent = headers.get('user-agent', '')
             response = f"HTTP/1.1 200 OK\r\n"
