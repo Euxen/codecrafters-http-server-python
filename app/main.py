@@ -40,6 +40,8 @@ def main():
                 content_length = int(headers.get('content-length', 0))
                 body = request.split("\r\n\r\n", 1)[1][:content_length]
                 
+
+
                 with open(file_path, "w") as f:
                     f.write(body)
                 
@@ -54,7 +56,6 @@ def main():
                     response += f"Content-Type: application/octet-stream\r\n"
 
                     #add gzip support
-
                     if supports_gzip and len(content) > 1000:
                         content = compress_data(content)
                         response += f"Content-Encoding: gzip\r\n"
@@ -62,7 +63,7 @@ def main():
                     response += f"Content-Length: {len(content)}\r\n"
                     response += f"\r\n"
                     response = response.encode("utf-8") + content
-                    
+
                 except FileNotFoundError:
                     response = "HTTP/1.1 404 Not Found\r\n\r\n"
         
