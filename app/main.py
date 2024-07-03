@@ -1,6 +1,11 @@
 import socket
 import sys
 import os
+import gzip
+
+def compress_data(data):
+    compressed_data = gzip.compress(data)
+    return compressed_data
 
 def main():
     directory = sys.argv[2] if len(sys.argv) > 2 else "/tmp"
@@ -24,6 +29,9 @@ def main():
                 key, value = line.split(":", 1)
                 headers[key.strip().lower()] = value.strip()
         
+        accept_encoding = headers.get('accept-encoding', '')
+        supports_gzip = 'gzip' in accept_encoding
+
         if path.startswith("/files/"):
             _, filename = path.split("/files/", 1)
             file_path = os.path.join(directory, filename)
@@ -44,9 +52,17 @@ def main():
                     
                     response = f"HTTP/1.1 200 OK\r\n"
                     response += f"Content-Type: application/octet-stream\r\n"
+
+                    #add gzip support
+
+                    if supports_gzip and len(content) > 1000:
+                        content = compress_data(content)
+                        response += f"Content-Encoding: gzip\r\n"
+
                     response += f"Content-Length: {len(content)}\r\n"
                     response += f"\r\n"
                     response = response.encode("utf-8") + content
+                    
                 except FileNotFoundError:
                     response = "HTTP/1.1 404 Not Found\r\n\r\n"
         
