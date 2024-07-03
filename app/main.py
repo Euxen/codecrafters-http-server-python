@@ -40,6 +40,7 @@ def main():
         elif path.startswith("/files/"):
             _, filename = path.split("/files/", 1)
             directory = sys.argv[2]
+            print (directory, filename)
 
             with open(f"{directory}/{filename}", "rb") as f:
                 content = f.read()
@@ -47,8 +48,7 @@ def main():
             response = f"HTTP/1.1 200 OK\r\n"
             response += f"Content-Type: application/octet-stream\r\n"
             response += f"Content-Length: {len(content)}\r\n"
-            response =+ f"{content}\r\n"
-            
+            response += f"\r\n{content}"
 
         else:
             response = "HTTP/1.1 404 Not Found\r\n\r\n"
