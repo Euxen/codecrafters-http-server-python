@@ -2,6 +2,7 @@ import socket
 import sys
 import os
 import gzip
+import io
 
 def compress_data(data):
     compressed_data = gzip.compress(data)
@@ -52,7 +53,6 @@ def main():
                     response = f"HTTP/1.1 200 OK\r\n"
                     response += f"Content-Type: application/octet-stream\r\n"
 
-                    #add gzip support
                     if supports_gzip and len(content) > 1000:
                         content = compress_data(content)
                         response += f"Content-Encoding: gzip\r\n"
@@ -66,21 +66,21 @@ def main():
         
         elif path == "/":
             response = "HTTP/1.1 200 OK\r\n\r\n"
+
         elif path.startswith("/echo/"):
-            content = path[6:] if path[6:] is not None else ""
+            content = path[6:]
             response = f"HTTP/1.1 200 OK\r\n"
             response += f"Content-Type: text/plain\r\n"
             
             if supports_gzip and content:
-                content = compress_data(content.encode("utf-8"))
-            
+                compressed_content = compress_data(content.encode("utf-8"))
                 response += f"Content-Encoding: gzip\r\n"
-                response += f"Content-Length: {len(content)}\r\n"
-                response += f"\r\n{content}"
+                response += f"Content-Length: {len(compressed_content)}\r\n\r\n"
+                response = response.encode("utf-8") + compressed_content
             else:
-                response += f"Content-Length: {len(content)}\r\n"
-                response += f"\r\n{content}"
-                
+                response += f"Content-Length: {len(content)}\r\n\r\n"
+                response += content
+
         elif path == "/user-agent":
             user_agent = headers.get('user-agent', '')
             response = f"HTTP/1.1 200 OK\r\n"
